@@ -8,22 +8,20 @@ nX, nY = 80, 80
 xSize = WIDTH/nX
 ySize = HEIGHT/nY
 
-pygame.init() # Initialize PyGame
+pygame.init()
+screen = pygame.display.set_mode([WIDTH,HEIGHT])
 
-screen = pygame.display.set_mode([WIDTH,HEIGHT]) # Set size of screen
-
-BG_COLOR = (10,10,10) # Define background color
+BG_COLOR = (10,10,10)
 LIVE_COLOR = (255,255,255)
 DEAD_COLOR = (128,128,128)
-# Celdas vivas = 1; Celdas muertas = 0
-status = np.zeros((nX,nY)) # Intialize status of cells
+status = np.zeros((nX,nY))
 
 pauseRun = False
 
 running = True
 while running:
 
-    newStatus = np.copy(status) # Copy status
+    newStatus = np.copy(status)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -36,10 +34,9 @@ while running:
         if sum(mouseClick) > 0:
             posX, posY = pygame.mouse.get_pos()
             x, y = int(np.floor(posX/xSize)), int(np.floor(posY/ySize))
-            #newStatus[x,y] = np.abs(newStatus[x,y]-1)
             newStatus[x,y] = not mouseClick[2]
 
-    screen.fill(BG_COLOR) # Clean background
+    screen.fill(BG_COLOR) 
 
     for x in range(0,nX):
         for y in range(0,nY):
@@ -47,17 +44,14 @@ while running:
 
             if not pauseRun:
 
-                # Numero de vecinos
                 nNeigh = status[(x-1)%nX,(y-1)%nY] + status[(x)%nX,(y-1)%nY] + \
                         status[(x+1)%nX,(y-1)%nY] + status[(x-1)%nX,(y)%nY] + \
                         status[(x+1)%nX,(y)%nY] + status[(x-1)%nX,(y+1)%nY] + \
                          status[(x)%nX,(y+1)%nY] + status[(x+1)%nX,(y+1)%nY]
 
-                # Rule 1: Una celula muerta con 3 vecinas revive
                 if status[x,y] == 0 and nNeigh==3:
                     newStatus[x,y] = 1
 
-                # Rule 2: Una celula viva con mas de 3 vecinos o menos de 2 muere
                 elif status[x,y] == 1 and (nNeigh < 2 or nNeigh > 3):
                     newStatus[x,y] = 0
 
